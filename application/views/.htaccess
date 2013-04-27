@@ -1,0 +1,11 @@
+# Ativa a reescrita de URL e desvia requisição de arquivo para index.php
+RewriteEngine On
+RewriteRule .* index.php
+
+# Garantia de configurações do PHP
+# Segurança
+#php_value display_errors off
+php_flag magic_quotes_gpc off
+php_flag register_globals off
+# Os templates usarão a forma curta de tags PHP. 
+php_flag short_open_tag on 

@@ -1,0 +1,44 @@
+body,html
+{
+	background:#EEE;
+	color:#474295;
+	font-family:Arial,Verdana,Helvetica,sans-serif;
+	font-size:100%;
+	margin:0;
+	padding:0;
+}
+h1
+{
+	font-size:1.4em;
+	color: #800000;
+	background-color: transparent;
+}
+#content
+{
+	width: 770px;
+	margin: 0 auto;
+}
+label
+{
+	width: 150px;
+	display: block;
+	float: left;
+}
+#formbutton
+{
+	margin-left: 100px;
+}
+a
+{
+	color: #160F83;
+}
+select, textarea, input {color:green;font:12px Tahoma, Arial;}
+/* Layout views Documento */
+#documento {color:blue;}
+#documento h2{background:yellow;}
+#documento input {font:12px Arial;}
+/* Layout views Documento */
+
+.center_block{text-align:center;}
+
+#footer_dev {border:1px solid #160F83;text-align:center;}

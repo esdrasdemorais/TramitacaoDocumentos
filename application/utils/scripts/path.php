@@ -1,0 +1,34 @@
+<?php
+/**
+ * O objetivo deste arquivo é determinar qual o sistema operacional do servidor web
+ * e, com essa informação, configurar o caminho de busca do interpretador PHP.
+ * @author Flávio Gomes da Silva Lisboa
+ * @filesource 
+ */
+define('WINDOWS','WINDOWS');
+define('LINUX','LINUX');
+
+function configurePath($applicationName)
+{
+	$documentRoot = $_SERVER['DOCUMENT_ROOT'];
+	// o teste abaixo irá variar dependendo das opções de sistema disponíveis
+	$operatingSystem = strpos('WIN32',strtoupper($_SERVER['SERVER_SOFTWARE'])) === FALSE ? LINUX : WINDOWS;
+
+	// configuração padrão: sistema de arquivos do UNIX
+	$bar = '/';
+	$pathSeparator = ':';
+
+	if ($operatingSystem == WINDOWS)
+	{
+		$bar = '/';
+		$pathSeparator = ':';
+		$documentRoot = str_replace('/','\\',$documentRoot);
+	}
+		
+	$path = $pathSeparator.$documentRoot.$bar.'library';
+	$path .= $pathSeparator.$documentRoot.$bar.$applicationName.$bar.'application'.$bar.'models';
+	$path .= $pathSeparator.$documentRoot.$bar.$applicationName.$bar.'application'.$bar.'utils';
+
+	set_include_path(get_include_path().$path);
+}
+?>

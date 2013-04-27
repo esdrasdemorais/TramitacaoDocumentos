@@ -1,0 +1,25 @@
+<?php echo $this->formSearch; ?>
+<br>
+<table border="1">
+	<tr>
+		<th>Id</th>
+		<th>Álbum</th>
+		<th>Artista</th>
+	</tr>
+<?php
+	foreach ($this->albuns as $key => $album)
+	{
+?>
+	<tr>
+		<td><?php echo $album->id;?></td>
+		<td><?php echo $album->title;?></td>
+		<td><?php echo $album->artist;?></td>
+	</tr>
+<?php
+	}
+?>
+</table>
+<?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination/search.phtml'); ?>
+</div>
+</body>
+</html>
