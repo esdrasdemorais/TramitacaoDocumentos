@@ -1,0 +1,12 @@
+<?php echo($this->render('header.tpl.phtml'));?>
+<h1><?php echo $this->escape($this->title); ?></h1>
+<?php
+if($this->configuracao):
+	echo($this->form);
+else:
+?>
+	<h1>Nenhuma Configuraão foi Selecionada para Alterar.</h1>
+<?php
+endif;
+?>
+<?php echo($this->render('footer.tpl.phtml'));?>

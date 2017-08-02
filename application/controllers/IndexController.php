@@ -1,7 +1,7 @@
 <?php
 /**
  * Controlador Default
- * @author Fl�vio Gomes da Silva Lisboa
+ * @author Flávio Gomes da Silva Lisboa
  * @copyright FGSL 2008
  * @license New SDB
  * @package application
@@ -16,24 +16,40 @@ class IndexController extends Zend_Controller_Action
 	 */
 	function init()
 	{
-		$this->view->baseUrl = $this->_request->getBaseUrl();
-		$this->view->welcomeMsg = "Ol&aacute; " . Zend_Auth::getInstance()->getIdentity();
 		$this->initView();
+		$this->view->baseUrl = $this->_request->getBaseUrl();
+		$this->view->actionName 	= $this->getRequest()->getActionName();
+		$this->view->controllerName	= $this->getRequest()->getControllerName();
+		
+		if(Zend_Auth::getInstance() && Zend_Auth::getInstance()->hasIdentity() === true)
+		{
+			$this->view->userLogin	= @Zend_Auth::getInstance()->getIdentity()->us_login;
+			$this->view->userUnitId	= @Zend_Auth::getInstance()->getIdentity()->un_id;
+			$this->view->userUnit 	= @Zend_Auth::getInstance()->getIdentity()->un_descricao;
+			$this->view->userId 	= @Zend_Auth::getInstance()->getIdentity()->us_id;
+			$this->view->userTipoId = @Zend_Auth::getInstance()->getIdentity()->tu_id;
+		}
+		else
+		{
+			$this->_redirect('/login/index?redirect=index');
+		}
 	}
 
 	/**
-	 * M�todo default
+	 * Método default
 	 *
 	 */
 	public function indexAction()
 	{
-		$this->view->title = "Página Inicial";
+		Zend_Loader::loadClass('Tramitacao');
+		
+		$this->view->title 	= "Página Inicial";
     	$this->view->detail = "in IndexController::indexAction() at " . $this->view->baseUrl;
+		
+		$objTramitacao 						   = new Tramitacao();
+		$this->view->countTramitacoesPendentes = $objTramitacao->getCountTramitacoesPendentes($this->view->userUnitId);
+		
 		$this->render();
-		#echo "<pre>";
-		#print_r($this->view);
-		#echo "</pre>";
-		#exit;
 	}
 	
 	function listuserAction()

@@ -1,0 +1,42 @@
+<?php if ($this->pages->pageCount > 0): ?>
+	<script type="text/javascript">
+	function searchList(formId, url)
+	{
+		var formSearch 		= document.getElementById(formId);
+		formSearch.action 	= url;
+		formSearch.submit();
+		delete formSearch;
+	}
+	function setPage(page)
+	{
+		document.getElementById('pagina').value = page;
+	}
+	</script>
+    <div class="paginationControl">
+    <!-- Página anterior --> 
+    <?php if (isset($this->pages->previous)): ?>
+    	<?php //echo($this->pages->url(array('pagina' => $this->previous))); ?> 
+        <a href="javascript:void(0)" onclick="searchList('<?php echo($this->controllerName); ?>SearchForm', '<?php echo($this->baseUrl); ?>/<?php echo($this->controllerName); ?>/list/pagina/<?php echo($this->pages->previous); ?>');setPage(<?php echo($this->pages->previous); ?>)">&lt; Anterior</a> | 
+    <?php else: ?> 
+        <span class="disabled">&lt; Anterior</span> | 
+    <?php endif; ?> 
+
+    <!-- numeração -->
+    <?php foreach ($this->pages->pagesInRange as $page): ?> 
+        <?php if ($page != $this->pages->current): ?>
+        <?php //echo($this->pages->url(array('pagina' => $page))); ?> 
+        <a href="javascript:void(0)" onclick="searchList('<?php echo($this->controllerName); ?>SearchForm', '<?php echo($this->baseUrl); ?>/<?php echo($this->controllerName); ?>/list/pagina/<?php echo($page); ?>')"><?php echo($page); ?></a> | 
+          <?php else: ?>
+        <?php echo($page); ?> | 
+          <?php endif; ?>
+    <?php endforeach; ?>
+
+    <!-- Próxima Página --> 
+    <?php if (isset($this->pages->next)): ?>
+    	<?php //$this->url(array('pagina' => $this->next)); ?>  
+		<a href="javascript:void(0)" onclick="searchList('<?php echo($this->controllerName); ?>SearchForm', '<?php echo($this->baseUrl); ?>/<?php echo($this->controllerName); ?>/list/pagina/<?php echo($this->pages->next); ?>');setPage(<?php echo($this->pages->next); ?>)">Pr&oacute;xima &gt;</a>
+    <?php else: ?> 
+        <span class="disabled">Pr&oacute;xima &gt;</span>
+    <?php endif; ?> 
+    </div> 
+<?php endif; ?>

@@ -14,19 +14,20 @@ class SecurityPlugin extends Zend_Controller_Plugin_Abstract
 
 	public function routeShutdown(Zend_Controller_Request_Abstract $oRequest) 
 	{
-		$sControllerName = $oRequest->getControllerName();
-		$sActionName = $oRequest->getActionName();
+		$sControllerName  = $oRequest->getControllerName();
+		$sActionName 	  = $oRequest->getActionName();
+		$oAuth 			  = Zend_Auth::getInstance();		
+		$oFrontController = Zend_Controller_Front::getInstance();
+		$sBaseUrl 		  = $oFrontController->getBaseUrl();
 		
-		$oAuth = Zend_Auth::getInstance();
-		
-		if(strtolower($sControllerName) != 'login' && !$oAuth->hasIdentity()) 
+		if(!$oAuth->hasIdentity() && strtolower($sControllerName) != 'login') 
 		{
-			$oFrontController = Zend_Controller_Front::getInstance();
-			$sBaseUrl = $oFrontController->getBaseUrl();
-			
-			$sRedirect = urlencode($sControllerName.'/'.$sActionName);
-			
-			$this->getResponse()->setRedirect($sBaseUrl . '/login/index?redirect='.$sRedirect, 302);
+			if(!(strtolower($sControllerName) == 'documento' && strtolower($sActionName) == 'list'))
+			{
+				$sRedirect = urlencode($sControllerName.'/'.$sActionName);
+
+				return $this->getResponse()->setRedirect($sBaseUrl.'/login');//  /login/index?redirect='.$sRedirect, 302 
+			}
 		}
 	}
 }

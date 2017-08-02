@@ -5,17 +5,247 @@
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	<title><?php echo $this->escape($this->title); ?></title>
 	<link rel="stylesheet" href="<?php echo($this->baseUrl);?>/public/styles/default.css" />
+	<script type="text/javascript">
+		function IEHoverPseudo()
+		{
+			var navItems = document.getElementById("menu_bar").getElementsByTagName("li");
+			for (var i=0; i<navItems.length; i++)
+			{
+				if(navItems[i].className == "menuparent")
+				{
+					navItems[i].onmouseover=function() { this.className += " over"; }
+					navItems[i].onmouseout=function() { this.className = "menuparent"; }
+				}
+			}
+		}
+		window.onload = IEHoverPseudo;
+		
+		// Função semelhante ao atributo target="_blank" do <form> sendo possível customizar a janela, tirando barras, e etc.
+		function openPrint(objFormulario, formActionName)
+		{
+			objFormulario.action = '<?php echo($this->baseUrl); ?>/<?php echo($this->controllerName); ?>/'+formActionName;
+			window.open("_blank",objFormulario.id,'width='+window.screen.width+',height='+window.screen.height+',toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+			objFormulario.target = objFormulario.id;
+			//objFormulario.target = '_blank'; submete o formulário numa nova janela
+			objFormulario.submit();
+			
+			// Volta ao ações do formulário de busca para a ação list da controller corrente
+			objFormulario.target = '';
+			objFormulario.action = '<?php echo($this->baseUrl);?>/<?php echo($this->controllerName); ?>/list';
+		}
+	</script>
 </head>
 <body>
+<!--<h1><?php echo $this->detail;?></h1>-->
 <!-- CONTENT -->
 <div id="content">
-	<h3><?php echo $this->welcomeMsg;?></h3>
-	<a href="<?php echo $this->baseUrl;?>/">index</a> | 
-	<a href="<?php echo $this->baseUrl;?>/login/logout/">logout</a>
+	<div id="header">
+		<div style="float:left;margin:10px 12px;width:179px;"><a href="http://www.proguaru.com.br" target="_blank"><img src="<?php echo($this->baseUrl);?>/public/images/logo_proguaru.png" width="178" height="39" alt="PG" title="PG" border="0" /></a></div>
+		<div style="text-align:center;float:left;margin:10px 0 0 96px;padding:0;width:370px;">
+			<strong>
+				Progresso e Desenvolvimento de Guarulhos
+			<?php
+			/** Não exibir o menu no form de listagem de documentos geral */
+			if(($this->controllerName != "login" || $this->actionName != "index") && !$this->readonly):
+			?>
+				<br />Sistema de Tramitação de Documentos
+			<?php
+			else:
+			?>
+				<br />Resoluções e Documentos Online
+			<?php
+			endif;
+			?>
+			</strong>
+		</div>
+		<?php
+		/** Não exibir o menu no form de login */
+		if(($this->controllerName != "login" || $this->actionName != "index") && !$this->readonly)
+		{
+		?>
+		<div style="width:310px;margin:10px 5px 2px 0;float:right;padding:0;text-align:right;font:11px Arial,Verdana;overflow:hidden;">
+			<strong>Unidade: <?php echo(utf8_encode($this->userUnit)); ?><br />Usuário: <?php echo(utf8_encode($this->userLogin)); ?><br />Versão 1.0</strong>
+		</div>
+		<?php
+		}
+		?>
+	</div>
 	
-	<a href="<?php echo $this->baseUrl;?>/index/listuser/id/4">id = 4</a> | 
-	<a href="<?php echo $this->baseUrl;?>/documento/">Documento</a> | 
-	<a href="<?php echo $this->baseUrl;?>/login/logout/">Logout</a>
-	<h1><?php echo $this->detail;?></h1>
+	<?php
+	/** Não exibir o menu no form de login e listagem de documentos geral */
+	#if($this->controllerName != "login" && $this->actionName != "index" && !$this->readonly)
+	if((int)$this->userTipoId)
+	{
+	?>
+	<div id="menu_bar">
+		<ul>
+			<li class="menuparent">
+				<a href="#">Cadastros</a>
+				<ul>
+					<?php
+					// Exibe os cadastros auxiliaraes caso seja o usuário logado seja gestor (ID Tipo Usuário = 1)
+					if($this->userTipoId == 1)
+					{
+					?>
+					<li><a href="<?php echo $this->baseUrl;?>/tipodocumento/">Tipo de Documento</a></li>
+					<li><a href="<?php echo $this->baseUrl;?>/assunto/">Assunto</a></li> 
+					<li><a href="<?php echo $this->baseUrl;?>/orgaoexterno/">Orgão Externo</a></li>
+					<?php
+					}
+					?>
+					<li><a href="<?php echo $this->baseUrl;?>/documento/">Documento</a></li>
+				</ul>
+			</li>
+			<li class="menuparent">
+				<a href="#">Consultas</a>
+				<ul>
+					<li><a href="<?php echo $this->baseUrl;?>/tipodocumento/list">Tipo de Documento</a></li>
+					<li><a href="<?php echo $this->baseUrl;?>/assunto/list">Assunto</a></li>
+					<li><a href="<?php echo $this->baseUrl;?>/orgaoexterno/list">Orgão Externo</a></li>
+					<li><a href="<?php echo $this->baseUrl;?>/documento/list">Documento</a></li>
+					<li><a href="<?php echo $this->baseUrl;?>/tramitacao/listpendencies">Documentos Pendentes</a></li>
+					<li><a href="<?php echo $this->baseUrl;?>/tramitacao/list">Tramitação</a></li>
+				</ul>
+			</li>
+			
+			<li class="menuparent">
+				<a href="<?php echo $this->baseUrl;?>/tramitacao/">Tramitação</a>
+			</li>
+			
+			<li class="menuparent">
+				<a href="#">Impressão</a>
+				<ul>
+					<?php
+					// Exibe o menu de configuração para o Gestor (ID Tipo Usuário = 1)
+					if($this->userTipoId == 1)
+					{
+					?>
+					<li><a href="<?php echo $this->baseUrl;?>/tipodocumento/print" target="_blank">Tipo de Documento</a></li>
+					<li><a href="<?php echo $this->baseUrl;?>/assunto/print" target="_blank">Assunto</a></li>
+					<li><a href="<?php echo $this->baseUrl;?>/orgaoexterno/print" target="_blank">Orgão Externo</a></li>
+					<?php
+					}
+					?>
+					<li><a href="<?php echo $this->baseUrl;?>/documento/print" target="_blank">Documento</a></li>
+					<li><a href="<?php echo $this->baseUrl;?>/tramitacao/print" target="_blank">Tramitação</a></li>
+				</ul>
+			</li>
+			<?php
+			// Exibe o menu de configuração para o Gestor (ID Tipo Usuário = 1)
+			if($this->userTipoId == 1)
+			{
+			?>
+			<li class="menuparent">
+				<a href="#">Configurações</a>
+				<ul>
+					<li><a href="<?php echo $this->baseUrl;?>/configuracao/edit/id/1">Liberar Agendamento Tramitação</a></li>
+				</ul>
+			</li>
+			<?php
+			}
+			?>
+			<li class="menuparent">
+				<a href="<?php echo $this->baseUrl;?>/public/manual/manual.htm" target="_blank">Ajuda</a>
+			</li>
+		</ul>
+	</div>
+	<?php
+	}
+	?>
 	
-	<hr />
+	<?php
+	//if($this->controllerName != 'index' && $this->controllerName != 'login' && !$this->readonly):
+	if((int)$this->userTipoId):
+	?>
+	<div id="menu_icons">
+		<ul>
+			<li>
+				<a href="<?php echo($this->baseUrl); ?>/<?php echo($this->controllerName); ?>" title="Cadastrar">
+					<img src="<?php echo($this->baseUrl); ?>/public/images/icons/add.png" />
+					<br />
+					Cadastrar
+				</a>
+			</li>
+			<li>
+				<a href="<?php echo($this->baseUrl); ?>/<?php echo($this->controllerName); ?>/list" title="Consultar">
+					<img src="<?php echo($this->baseUrl);?>/public/images/icons/search.png" />
+					<br />
+					Consultar
+				</a>
+			</li>
+			<?php
+			if($this->id > 0)
+			{
+			?>
+			<li>
+				<a href="<?php echo $this->baseUrl;?>/<?php echo($this->controllerName); ?>/delete/id/<?php echo($this->id); ?>" title="Excluir">
+					<img src="<?php echo($this->baseUrl);?>/public/images/icons/delete.png" />
+					<br />
+					Excluir
+				</a>
+			</li>
+			<?php
+			}
+			?>
+			<?php
+			if($this->actionName == 'list')
+			{
+			?>
+			<li>
+				<?php
+				if($this->controllerName == 'documento' || $this->controllerName == 'tramitacao'):
+				?>
+				<a href="javascript:openPrint(document.getElementById('<?php echo($this->controllerName);?>SearchForm'), 'print')" title="Imprimir">
+				<?php
+				else:
+				?>
+				<a href="<?php echo($this->baseUrl);?>/<?php echo($this->controllerName);?>/print" target="_blank" title="Imprimir">
+				<?php
+				endif;
+				?>
+					<img src="<?php echo($this->baseUrl);?>/public/images/icons/print.png" />
+					<br />
+					Imprimir
+				</a>				
+			</li>
+			<li>
+				<a href="<?php echo $this->baseUrl; ?>" title="Início">
+					<img src="<?php echo($this->baseUrl); ?>/public/images/icons/home.png" />
+					<br />
+					Início
+				</a>
+			</li>
+			<?php
+			}
+			?>
+			
+			<?php
+			if($this->controllerName != 'login' && !$this->readonly)
+			{
+			?>
+			<li>
+				<a href="<?php echo $this->baseUrl; ?>/login/edit" title="Senha">
+					<img src="<?php echo($this->baseUrl);?>/public/images/icons/password.png" />
+					<br />
+					Senha
+				</a>
+			</li>
+			<li>
+				<a href="<?php echo $this->baseUrl; ?>/login/logout" title="Sair">
+					<img src="<?php echo($this->baseUrl); ?>/public/images/icons/exit.png" />
+					<br />
+					Sair
+				</a>
+			</li>
+			<?php
+			}
+			?>
+		</ul>
+	</div>
+	<?php
+	endif;
+	?>
+	
+	<br class="clr" />
+	<!-- /PANEL -->
+	<div id="panel">

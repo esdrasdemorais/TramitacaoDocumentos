@@ -13,6 +13,16 @@ date_default_timezone_set('America/Sao_Paulo');
 /** Configura o formato para moeda */
 setlocale(LC_MONETARY,'ptb');
 
+// Step 1: APPLICATION CONSTANTS - Set the constants to use in this application.
+// These constants are accessible throughout the application, even in ini 
+// files.
+).
+defined('APPLICATION_PATH')
+    or define('APPLICATION_PATH', dirname(__FILE__));
+ 
+defined('APPLICATION_ENVIRONMENT')
+    or define('APPLICATION_ENVIRONMENT', 'database');
+
 /**
  * Configura o caminho a ser procurado em todos os includes.
  * Irá procurar no diretório ../library, no application/models
@@ -28,25 +38,11 @@ setlocale(LC_MONETARY,'ptb');
  * Seta include path para o funcionamento correto do framework ZEND e o modelo da aplicação (application/models)
  ***OBRIGATÓRIO***
  */
-#set_include_path('.' . PATH_SEPARATOR . './library' . PATH_SEPARATOR . './application/models/' . PATH_SEPARATOR.get_include_path());
-$operatingSystem = stripos($_SERVER['SERVER_SOFTWARE'],'win32')!== FALSE ? 'WINDOWS' : 'LINUX';
-$bar 			= ($operatingSystem == 'WINDOWS') ? '\\' : '/';
-$pathSeparator  = ($operatingSystem == 'WINDOWS') ? ';' : ':';
-$documentRoot   = ($operatingSystem == 'WINDOWS') ? str_replace('/','\\',$_SERVER['DOCUMENT_ROOT']) : $_SERVER['DOCUMENT_ROOT'];
-/**
- * Seta o path separando os paths por PATH_SEPARATOR ou :
- * $path = ':'.$pathSeparator.$documentRoot.$bar.'teste'.$bar.'library';
- * $path+= ':'.$pathSeparator.$documentRoot.$bar.'teste'.$bar.'application'.$bar.'models';
- */
-$path = $pathSeparator.$documentRoot.$bar.'tramitacao_documentos'.PATH_SEPARATOR.$pathSeparator.$documentRoot.$bar.'tramitacao_documentos'.$bar.'library'.PATH_SEPARATOR.'application'.$bar.'models';
-set_include_path(get_include_path().$path);
-
-/*// configura o caminho
-require('application/utils/scripts/path.php');
+require_once('application/utils/scripts/path.php');
 configurePath(basename(getcwd()));
 
 // carrega classe que fará a inicialização do Zend Framework
-require('application/utils/classes/Bootstrap.php');
+/*require('application/utils/classes/Bootstrap.php');
 new Bootstrap($_SERVER['PHP_SELF']);*/
 
 /**
@@ -84,16 +80,18 @@ require_once("Zend/Loader.php");
 Zend_Loader::loadClass('Zend_Registry');
 
 Zend_Loader::loadClass('Zend_Controller_Front');  	/** Classe de controladores */
-Zend_Loader::loadClass('Zend_Session'); 			/** Inclui o suporte a sessões. Só é necessário caso seja usado. */
-Zend_Loader::loadClass('Zend_Session_Namespace'); 	/** Classe usada para armazenar e recuperar dados da sessão */
 Zend_Loader::loadClass("Zend_View"); 				/* Classe das visões */
 Zend_Loader::loadClass('Zend_Config_Ini'); 			/** Classe usada para configurações */
 Zend_Loader::loadClass('Zend_Db'); 					/** Classe para acesso a base de dados */
 Zend_Loader::loadClass('Zend_Db_Table'); 			/** Classe para usar as tabelas como objetos */
 Zend_Loader::loadClass('Zend_Filter_Input');		/** Classe usada para filtrar os dados */
-Zend_Loader::loadClass("Zend_Auth");
+
+Zend_Loader::loadClass('Zend_Session'); 			/** Inclui o suporte a sessões. Só é necessário caso seja usado. */
+Zend_Loader::loadClass('Zend_Session_Namespace'); 	/** Classe usada para armazenar e recuperar dados da sessão */
 Zend_Loader::loadClass("Zend_Controller_Plugin_Abstract");
 Zend_Loader::loadClass("SecurityPlugin");
+Zend_Loader::loadClass("Zend_Auth");
+
 Zend_Loader::loadClass('Zend_Form');
 Zend_Loader::loadClass('LoginForm');
 
@@ -112,9 +110,10 @@ Zend_Registry::set('session', new Zend_Session_Namespace());
 
 /** Parte das visões (Views) */
 $objView = new Zend_View(); 					/** Cria um novo objeto do tipo view */
-$objView->setEncoding('UTF-8');					/** Configura a codificação das páginas */
+// $objView->setEncoding('UTF-8');					/** Configura a codificação das páginas */
 $objView->setEscape('htmlentities');			/** Escapar entradas HTML */
-$objView->setBasePath('./application/views/');	/** Define o diretório onde estarão as visões */
+$objView->setBasePath(APPLICATION_PATH.'/application/views/');	/** Define o diretório onde estarão as visões */
+$objView->addHelperPath('Zend/Dojo/View/Helper/', 'Zend_Dojo_View_Helper'); /** Adiciona a lib js Dojo ao objeto View */
 Zend_Registry::set('view', $objView); 			/** Registra na memória a variável view que indica a visão */
 
 /**
@@ -139,21 +138,39 @@ $baseUrl = substr($_SERVER['PHP_SELF'], 0, strpos($_SERVER['PHP_SELF'], '/index.
 
 /** Configura o endereço do controlador do projeto */
 $objControlador->setbaseUrl($baseUrl);
-
+echo "<pre>";
+print_r($objControlador);
+echo "</pre>";
 /* Mostrar exceções (apenas para testes) */
 $objControlador->throwExceptions(TRUE);
 
+// Step 3: CONTROLLER DIRECTORY SETUP - Point the front controller to your action
+// controller directory.
 $objControlador->setControllerDirectory('./application/controllers'); // seta diretório com nossos controllers
+#$objControlador->setControllerDirectory(APPLICATION_PATH.'/controllers'); // seta diretório com nossos controllers
+
+// Step 4: APPLICATION ENVIRONMENT - Set the current environment.
+// Set a variable in the front controller indicating the current environment --
+// commonly one of development, staging, testing, production, but wholly
+// dependent on your organization's and/or site's needs.
+#$objControlador->setParam('env', APPLICATION_ENVIRONMENT);
 
 $objControlador->registerPlugin(new SecurityPlugin());
 
-/** Configurações da base de dados.
+/**
+ * CONFIGURATION - Setup the configuration object
+ * The Zend_Config_Ini component will parse the ini file, and resolve all of
+ * the values for the given section.  Here we will be using the section name
+ * that corresponds to the APP's Environment.
+ * Configurações da diretiva [database] referente a base de dados.
  * Indica onde estão as configurações do projeto.
- * Estão no arquivo config.ini na seção database.
+ * Estão no arquivo config.ini na seção (diretiva) database.
+ *
  */
-$objConfig = new Zend_Config_Ini('./application/config.ini', 'database');
+$objConfig = new Zend_Config_Ini('./application/config.ini', APPLICATION_ENVIRONMENT); //'database'
+#$objConfig = new Zend_Config_Ini(APPLICATION_PATH.'\config.ini', APPLICATION_ENVIRONMENT); //'database'
 
-/** Registra na memória a variável config */
+/** Registra na memória o objeto Zend_Config_Ini config */
 Zend_Registry::set('config', $objConfig);
 
 /** Configura a conexão com a base de dados, pegando as variáveis do arquivo
@@ -161,25 +178,35 @@ Zend_Registry::set('config', $objConfig);
  */
 try
 {
-	/*
+	
 	$objConfig->db->config->toArray() = array(
-    'host'     => 'server1',
-    'username' => 'sa',
-    'password' => '',
+    'host'     => 'SERVERSQL\PROGUARUSA',
+    'username' => 'ProguaruDB',
+    'password' => '3p1d3rm3',
+    'dbname'   => 'Documentos'
+	);
+	
+	
+	/**
+	* DATABASE ADAPTER - Setup the database adapter
+	* Zend_Db implements a factory interface that allows developers to pass in an
+	* adapter name and some parameters that will create an appropriate database
+	* adapter object.  In this instance, we will be using the values found in the
+	* "database" section of the configuration obj.
+	*/
+	$objDb = Zend_Db::factory($objConfig->db->adapter, $objConfig->db->config->toArray());
+	
+	//$objDb->query("SET NAMES 'utf8'");
+	//$objDb->query('SET CHARACTER SET utf8');
+	
+    $db = Zend_Db::factory('Pdo_Mssql', array(
+    'host'     => 'SERVERSQL\PROGUARUSA',
+    'username' => 'ProguaruDB',
+    'password' => '3p1d3rm3',
     'dbname'   => 'Documentos'
 	));
-	*/
 	
-	$db = Zend_Db::factory($objConfig->db->adapter, $objConfig->db->config->toArray());
-
-    /*$db = Zend_Db::factory('Pdo_Mssql', array(
-    'host'     => 'server1',
-    'username' => 'sa',
-    'password' => '',
-    'dbname'   => 'Documentos'
-	));*/
-	
-    #$db->getConnection();
+    $db->getConnection();
 }
 catch(Zend_Db_Adapter_Exception $e)
 {
@@ -189,20 +216,64 @@ catch(Zend_Exception $e)
 {
    $e->getMessage();
 }
-#$sql = 'SELECT * FROM tb_unidade';
-#$result = $db->fetchAll($sql);
-#echo "----------------<pre>" . var_dump($result) . "</pre>";
 
-Zend_Db_Table_Abstract::setDefaultAdapter($db);
 
-/** Registra a variável db */
-Zend_Registry::set('db', $db);
+try {
+	#$dbh = new PDO('mssql:host=SERVERSQL\PROGUARUSA;dbname=Documentos', "ProguaruDB", "3p1d3rm3");
+	
+	#foreach ($dbh->query('SELECT * from tb_documento_arquivo') as $row) {
+	#	print_r($row);
+	#}
+	$dbh = null;
+} catch (PDOException $e) {
+	print "Error!: " . $e->getMessage() . "<br/>";
+	die();
+}*/
+
+/*$sql = 'SELECT * FROM tb_unidade';
+$result = $objDb->fetchAll($sql);
+echo "<!-- -----------------<pre>";
+var_dump($result);
+echo "</pre>-->";*/
+
+/**
+* DATABASE TABLE SETUP - Setup the Database Table Adapter
+* Since our application will be utilizing the Zend_Db_Table component, we need 
+* to give it a default adapter that all table objects will be able to utilize 
+* when sending queries to the db.
+*/
+Zend_Db_Table_Abstract::setDefaultAdapter($objDb);
+
+/** Registra o objeto Zend_Db na memória */
+Zend_Registry::set('db', $objDb);
+
+// Carregando arquivo de internacionalização
+#include_once 'i18n.php'; 
+#Zend_Loader::loadClass('Zend_Translate');
+#$translate = new Zend_Translate('array', $portugues, 'pt_BR'); 
+#$registry->set('translate', $translate);  
+
+// REGISTRY - setup the application registry
+// An application registry allows the application to store application 
+// necessary objects into a safe and consistent (non global) place for future 
+// retrieval.  This allows the application to ensure that regardless of what 
+// happends in the global scope, the registry will contain the objects it 
+// needs.
+#$registry = Zend_Registry::getInstance();
+#$registry->configuration 	= $objConf;
+#$registry->db     			= $objDb;
 
 /**
  * 
  * Inicializando o sistema
  */
 $objControlador->dispatch();
+
+// Step 5: CLEANUP - Remove items from global scope.
+// This will clear all our local boostrap variables from the global scope of 
+// this script (and any scripts that called bootstrap).  This will enforce 
+// object retrieval through the applications's registry.
+unset($objControlador, $objConf, $objDb);
 
 /**
  * 

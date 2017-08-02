@@ -1,0 +1,14 @@
+<?php echo($this->render('header.tpl.phtml'));?>
+<h1><?php echo $this->escape($this->title); ?></h1>
+<?php
+if($this->assunto):
+	echo($this->form);
+?>
+<?php
+else:
+?>
+	<p>Assunto não encontrado</p>
+<?php
+endif;
+?>
+<?php echo($this->render('footer.tpl.phtml'));?>

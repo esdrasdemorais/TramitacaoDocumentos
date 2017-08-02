@@ -1,11 +1,44 @@
+<?php
+Zend_Dojo::enableView($this);
+
+$this->addHelperPath('Zend/Dojo/View/Helper/', 'Zend_Dojo_View_Helper'); /** Adiciona a lib js Dojo ao objeto View */
+
+$this->dojo()->setDjConfig(array(
+             	'parseOnLoad' => true,
+             	'locale' => 'pt-br'	// Set language
+             ))
+             ->setLocalPath($this->baseUrl . '/js/dojo/dojo.js')
+             ->addStyleSheetModule('dijit.themes.tundra')
+     ->disable(); // Enable only when necessary
+
+#print_r($this->dojo());
+?>
 <?php echo($this->render('header.tpl.phtml'));?>
-<br />
 <div id="documento">
-<h2>Cadastro de Documento</h2>
+<h2><?php echo($this->title);?></h2>
 <?php
 /** Debug */
-echo "<!--<pre>"; print_r($this->form); echo "<pre>-->";
+echo "<!--<pre>"; print_r($this); echo "<pre>-->";
 ?>
+<script type="text/javascript">
+/*document.getElementById('oe_id-label').onload = new function()
+{
+	displayOrgaoExterno('Não');
+}*/
+function displayOrgaoExterno(value)
+{
+	if(value=='Sim')
+	{
+		document.getElementById('oe_id-label').style.display   = 'block';
+		document.getElementById('oe_id-element').style.display = 'block';
+	}
+	else
+	{
+		document.getElementById('oe_id-label').style.display   = 'none';
+		document.getElementById('oe_id-element').style.display = 'none';
+	}
+}
+</script>
 <?php echo($this->form);?>
 </div>
 <?php echo($this->render('footer.tpl.phtml'));?>

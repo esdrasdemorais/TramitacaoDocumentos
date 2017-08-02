@@ -1,0 +1,7 @@
+<?php echo($this->render('header.tpl.phtml'));?>
+<?php echo $this->formSearch;?>
+<br />
+<p><a href="<?php echo $this->baseUrl; ?>/documento">Adicionar novo Documento</a></p>
+<?php echo $this->render('./documento/FlexGrid.phtml'); ?>
+<?php #echo $this->paginationControl($this->paginator, 'Sliding', $this->baseUrl.'/pagination/search.phtml'); ?>
+<?php echo($this->render('footer.tpl.phtml'));?>

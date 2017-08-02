@@ -1,0 +1,1 @@
+<?phpif(isset($this->msg)){	echo($this->render('header.tpl.phtml'));	echo($this->msg);	echo($this->render('footer.tpl.phtml'));}else{	//header("Content-Disposition: inline; filename=result.pdf");	header("Content-type: application/pdf");	echo($this->pdf);}?>

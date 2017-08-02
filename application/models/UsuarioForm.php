@@ -1,8 +1,8 @@
 <?php
 /**
- * Classe modelo de formulário de TramitacaoForm
+ * Classe modelo de formulÃ¡rio de TramitacaoForm
  */
-class TramitacaoForm extends Zend_Form
+class UsuarioForm extends Zend_Form
 {
     public function init()
     {
@@ -16,8 +16,8 @@ class TramitacaoForm extends Zend_Form
             'label'      => 'Documento:'
         ));
 		
-		// Cota da tramitação se houver (DEFAULT NULL)
-        $tr_cota = $this->addElement('text', 'tr_cota', array(
+		// Cota da tramitaÃ§Ã£o se houver (DEFAULT NULL)
+        $us_cota = $this->addElement('text', 'tr_cota', array(
             'filters'    => array('StringTrim', 'StringToLower'),
             'validators' => array(
                 'Alpha',
@@ -27,28 +27,6 @@ class TramitacaoForm extends Zend_Form
             'label'      => 'Cota:'
         ));
 		
-		// Data Início Tramitação
-        $tr_cota = $this->addElement('text', 'tr_data_inicio', array(
-            'filters'    => array('StringTrim', 'StringToLower'),
-            'validators' => array(
-                'Alpha',
-                array('StringLength', false, array(10, 10))
-            ),
-            'required'   => false,
-            'label'      => 'Cota:'
-        ));
-		
-		// Data Término Tramitação
-		$oe_id = $this->addElement('text', 'tr_data_termino', array(
-            'filters'    => array('StringTrim', 'StringToLower'),
-            'validators' => array(
-                'Alpha',
-				array('StringLength', false, array(10, 10))
-            ),
-            'required'   => true,
-            'label'      => 'Ordem Externa:'
-        ));
-	
 		// ID Unidade de destino (DEFAULT NULL)
 		$oe_id = $this->addElement('select', 'un_id', array(
             'filters'    => array('StringTrim', 'StringToLower'),
@@ -59,18 +37,9 @@ class TramitacaoForm extends Zend_Form
             'label'      => 'Ordem Externa:'
         ));
 		
-		$oe_id = $this->addElement('select', 'un_id', array(
-            'filters'    => array('StringTrim', 'StringToLower'),
-            'validators' => array(
-                'num'
-            ),
-            'required'   => true,
-            'label'      => 'Ordem Externa:'
-        ));
 		
 		
-		
-		// Botão de envio do formulário
+		// BotÃ£o de envio do formulÃ¡rio
         $salvar = $this->addElement('submit', 'save', array(
             'required' => true,
             'ignore'   => true,
@@ -78,7 +47,7 @@ class TramitacaoForm extends Zend_Form
         ));
         
         /**
-         * Esse método serve para exibir mensagens de erro no submit do formulário
+         * Esse mÃ©todo serve para exibir mensagens de erro no submit do formulÃ¡rio
          */
         $this->setDecorators(array(
             'FormElements',

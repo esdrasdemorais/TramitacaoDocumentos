@@ -1,0 +1,110 @@
+<?php echo($this->render('header.tpl.phtml'));?>
+
+<h1><?php echo($this->title);?></h1>
+
+<?php echo($this->documentoSearchForm);?>
+
+<br />
+
+<?php
+if(count($this->documentos)):
+?> 
+<table border="0">
+	<tr>
+		<th>Nº Documento</th>
+		<th>Data Elaboração</th>
+		<th>Tipo Documento</th>
+		<?php
+		///* Caso não seja somente leitura de documento ($this->readonly true) exibe o usuário que criou o documento
+		if(!$this->readonly)
+		{
+		?>
+		<th>Usuário</th>
+		<?php
+		}
+		?>
+		<th>Orgão Origem</th>
+		<th>Assunto</th>
+		<th>Complemento Assunto</th>
+	</tr>
+<?php
+	foreach($this->paginator as $key => $documento):
+		$rowColor = (($key + 1) % 2) == 0 ? "#E4E4E4" : "#FFFFFF";
+?>
+	<tr style="cursor:pointer;_cursor:hand;background:<?php echo($rowColor);?>" onclick="window.location.href='<?php echo($this->baseUrl);?>/documento/viewarquivo/id/<?php echo($this->escape($documento['dc_id']));?>'" onmouseover="this.style.background = '#E1EDF9'; this.style.fontWeight = 'bold';" onmouseout="this.style.background = '<?php echo($rowColor);?>'; this.style.fontWeight = 'normal';">
+		<td>
+		<?php
+		// Caso o documento possuir arquivo PDF cadastrado linca para visualização do arquivo PDF
+		if($documento['possuiArquivo'])
+		{
+		?>
+		<a href="<?php echo($this->baseUrl);?>/documento/viewarquivo/id/<?php echo($this->escape($documento['dc_id']));?>" target="_blank" alt="Clique Aqui para Visualizar o PDF" title="Clique Aqui para Visualizar o PDF"><?php echo($this->escape($documento['dc_numero']));?></a>
+		<?php
+		}
+		else
+		{
+			echo $this->escape($documento['dc_numero']);
+		}
+		?>
+		</td>
+		<td>
+			<?php
+			$objDate 		= new Zend_Date($this->escape($documento['dc_data_elaboracao']));
+			$objLocale  	= new Zend_Locale('pt_BR');
+			Zend_Date::setOptions(array('format_type' => 'php'));
+			$fmdc_data_elaboracao = $objDate->toString('d/m/Y'); /** pt_BR format */
+			
+			//echo($this->escape($documento['dc_data_elaboracao']));
+			echo($fmdc_data_elaboracao);
+			?>
+		</td>
+		<td><?php echo($this->escape($documento['td_descricao'])); ?></td>
+		<?php
+		// Caso não seja somente leitura de documento ($this->readonly true) exibe o usuário que criou o documento
+		if(!$this->readonly)
+		{
+		?>
+		<td><?php echo($documento['us_id'] == $this->userId ? "<strong>".$this->userLogin."</strong>" : $this->escape($documento['us_nome'])); ?></td>
+		<?php
+		}
+		?>
+		<td><?php echo(strlen($documento['orgao_origem']) ? $this->escape(trim($documento['orgao_origem'])) : '&nbsp;'); ?></td>
+		<td><?php echo($this->escape(trim($documento['as_descricao']))); ?></td>
+		<td><?php echo(strlen($documento['dc_compl_assunto']) ? $this->escape(trim($documento['dc_compl_assunto'])) : '&nbsp;'); ?></td>
+		<?php
+		// Caso não seja somente leitura de documento ($this->readonly true) e for o usuário que cadastrou o documento ou a unidade dele libera editar ou desativar o documento
+		if(!$this->readonly && $documento['libera_edicao_desativacao']):
+		?>
+		<td>
+			<a target="_blank" href="<?php echo($this->baseUrl);?>/documento/printrosto/id/<?php echo($documento['dc_id']);?>"><img src="<?php echo($this->baseUrl);?>/public/images/icons/add.png" width="30" height="27" alt="Editar" title="Folha de rosto" border="0"/></a>
+			<?php if($documento['tr_temtram'] == 0): ?>
+			<a href="<?php echo($this->baseUrl);?>/documento/edit/id/<?php echo($documento['dc_id']);?>"><img src="<?php echo($this->baseUrl);?>/public/images/icons/edit.png" width="30" height="27" alt="Editar" title="Editar" border="0" /></a>
+			<?php endif; ?>
+			<a href="<?php echo $this->baseUrl;?>/documento/delete/id/<?php echo($documento['dc_id']);?>"><img src="<?php echo($this->baseUrl);?>/public/images/icons/delete.png" width="30" height="27" alt="Desativar" title="Desativar" border="0" /></a>
+		</td>
+		<?php
+		else:
+		?>
+		<?php
+		endif;
+		?>
+	</tr>
+<?php
+	endforeach;
+?>
+</table>
+<?php
+else:
+?>
+	<p><strong><?php echo($this->userLogin);?></strong>, não há documento.</p>
+<?php
+endif;
+?>
+
+<?php
+//echo $this->paginationControl($this->paginator, 'Sliding', 'pagination/partial.phtml');
+//echo($this->paginator);
+echo($this->render('pagination/partial.phtml'));
+?>
+
+<?php echo($this->render('footer.tpl.phtml'));?>

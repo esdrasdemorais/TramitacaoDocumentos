@@ -1,2 +1,61 @@
-<h2>Cadastro de Tramita&ccedil;&atilde;o</h2>
-<?php echo($this->form);?>
+<?php echo($this->render('header.tpl.phtml')); ?>
+
+<h2><?php echo($this->title); ?></h2>
+
+<?php
+/** Debug */
+//echo "<!--<pre>"; print_r($this->form); echo "<pre>-->";
+?>
+
+<?php
+if(strlen($this->descriptionHtml)):
+	echo($this->descriptionHtml);
+?>
+	<table>
+		<tr>
+			<th>Nº Documento</th>
+			<th>Tipo Documento</th>
+			<th>Usuário</th>
+			<th>Data Elaboração</th>
+			<th>Data Cadastro</th>
+			<th>Assunto</th>
+			<th>Complemento Assunto</th>
+			<th>Orgão Origem</th>
+		</tr>
+	<?php
+		foreach($this->documentos as $documento):
+			$documento['us_nome'] 		   = ($documento['us_id'] == $this->userId) ? "<strong>".$this->escape($documento['us_nome'])."</strong>" : $this->escape($documento['us_nome']);
+			$documento['dc_compl_assunto'] = (strlen($documento['dc_compl_assunto'])) ? $this->escape(trim($documento['dc_compl_assunto'])) : '&nbsp;';
+			$documento['orgao_origem'] 	   = (strlen($documento['orgao_origem'])) ? $this->escape(trim($documento['orgao_origem'])) : '&nbsp;';
+		
+	?>
+	<tr>
+		<td><?php echo($this->escape($documento['dc_numero'])); ?></td>
+		<td><?php echo($this->escape($documento['td_descricao'])); ?></td>
+		<td><?php echo($documento['us_nome']); ?></td>
+		<td><?php echo($this->escape($documento['dc_data_elaboracao'])); ?></td>
+		<td><?php echo($this->escape($documento['dc_data_cadastro'])); ?></td>
+		<td><?php echo($this->escape(trim($documento['as_descricao']))); ?></td>
+		<td><?php echo($documento['dc_compl_assunto']); ?></td>
+		<td><?php echo($documento['orgao_origem']); ?></td>
+	</tr>
+	<?php
+		endforeach;
+	?>
+	</table>
+	<br />
+	<strong>Antes de concluir a tramitação confirme se os documentos selecionados estão corretos. Não haverá como retroceder esta ação.</strong>
+	<br />
+	<hr />
+	<?php
+	echo($this->form);
+	?>
+<?php 
+else:
+?>
+	<?php echo($this->render('tramitacao/listdocumentos.phtml')); ?>
+<?php
+endif;
+?>
+
+<?php echo($this->render('footer.tpl.phtml')); ?>

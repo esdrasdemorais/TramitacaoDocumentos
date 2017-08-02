@@ -3,17 +3,19 @@
 <table border="1">
 	<tr>
 		<th>Id</th>
-		<th>Álbum</th>
-		<th>Artista</th>
+		<th>Tipo Documento</th>
+		<th>Usu&aacute;rio</th>
+		<th>Usu&aacute;rio</th>
 	</tr>
 <?php
-	foreach ($this->albuns as $key => $album)
+	foreach ($this->documentos as $key => $documento)
 	{
 ?>
 	<tr>
-		<td><?php echo $album->id;?></td>
-		<td><?php echo $album->title;?></td>
-		<td><?php echo $album->artist;?></td>
+		<td><?php echo $documento->id;?></td>
+		<td><?php echo $documento->td_id;?></td>
+		<td><?php echo $documento->dc_data_elaboracao;?></td>
+		<td><?php echo $documento->us_id;?></td>
 	</tr>
 <?php
 	}

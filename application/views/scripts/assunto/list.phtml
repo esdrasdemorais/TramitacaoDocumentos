@@ -1,0 +1,34 @@
+<?php echo($this->render('header.tpl.phtml'));?>
+<h1><?php echo($this->title);?></h1>
+<?php echo $this->formSearch; ?>
+<table border="1">
+	<tr>
+		<th>Descrição</th>
+		<th>Data de Cadastro</th>
+		<th>Usuário</th>
+	</tr>
+<?php
+foreach($this->assuntos as $key => $assunto):
+?>
+	<tr>
+		<td><?php echo($this->escape(trim($assunto['as_descricao']))); ?></td>
+		<td><?php echo($this->escape($assunto['as_data_cadastro'])); ?></td>
+		<td><?php echo($this->escape($assunto['us_id']) == $this->userId ? "<strong>".utf8_encode($this->userLogin)."</strong>" : utf8_encode($assunto['us_nome'])); ?></td>
+		<?php
+		// Caso for o gestor (Tipo Usuário com ID = 1) libera edição e desativação
+		if($this->userTipoId == 1):
+		?>
+		<td>
+			<a href="<?php echo($this->baseUrl);?>/assunto/edit/id/<?php echo($assunto['as_id']);?>"><img src="<?php echo($this->baseUrl);?>/public/images/icons/edit.png" width="30" height="27" alt="Editar" title="Editar" border="0" /></a>
+			<a href="<?php echo $this->baseUrl;?>/assunto/delete/id/<?php echo $assunto['as_id'];?>"><img src="<?php echo($this->baseUrl);?>/public/images/icons/delete.png" width="30" height="27" alt="Desativar" title="Desativar" border="0" /></a>
+		</td>
+		<?php
+		endif;
+		?>
+	</tr>
+<?php
+endforeach;
+?>
+</table>
+<?php #echo $this->paginationControl($this->paginator, 'Sliding', 'pagination/search.phtml'); ?>
+<?php echo($this->render('footer.tpl.phtml'));?>

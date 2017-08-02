@@ -1,0 +1,11 @@
+<?php echo($this->render('header.tpl.phtml'));?>
+<h2><?php echo($this->title);?></h2>
+<?php
+/** Debug */
+echo "<!--<pre>"; print_r($this->form); echo "<pre>-->";
+?>
+<?php
+echo($this->descriptionHtml);
+?>
+<?php echo($this->form); ?>
+<?php echo($this->render('footer.tpl.phtml'));?>

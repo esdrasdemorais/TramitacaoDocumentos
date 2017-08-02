@@ -1,0 +1,81 @@
+<?php echo($this->render('header.tpl.phtml'));?>
+ 
+<h1><?php echo($this->title);?></h1>
+
+<?php
+echo($this->tramitacaoSearchForm);
+?>
+
+<br />
+
+<?php
+if(count($this->tramitacoes)):
+?>
+<form name="formTramitacoes" id="formTramitacoes" action="<?php echo($this->baseUrl);?>/<?php echo($this->controllerName);?>/" method="post">
+<table border="1">
+	<tr>
+		<th>Data Início</th>
+		<th>Documento</th>
+		<th>Orgão de Origem</th>
+		<th>Unidade de Destino</th>
+		<th>Usuário</th>
+		<th>Cota</th>
+		<th>Data Finalização</th>
+	</tr>
+<?php
+	if (count($this->paginator))
+	{
+?>
+<?php
+	foreach($this->paginator as $key => $tramitacao):
+?>
+	<tr>
+		<td><?php echo($this->escape($tramitacao['tr_data_inicio'])); ?></td>
+		<td><?php echo($this->escape($tramitacao['dc_numero'])); ?></td>
+		<td><?php echo($this->escape($tramitacao['orgao_origem'])); ?></td>
+		<td><?php echo($this->escape($tramitacao['un_descricao'])); ?></td>
+		<td><?php echo($this->escape($tramitacao['us_nome'])); ?></td>
+		<td><?php echo(strlen($tramitacao['tr_cota']) ? $this->escape($tramitacao['tr_cota']) : '&nbsp;'); ?></td>
+		<td><?php echo(strlen($tramitacao['tr_data_termino']) ? $this->escape($tramitacao['tr_data_termino']) : '<strong class="pendente">Pendente de Recebimento</strong>'); ?></td>
+		<?php
+		// Caso a tramitação foi cadastrada pela unidade do usuário logado libera edição somente se a guia não foi impressa
+		if($tramitacao['libera_edicao_desativacao'])
+		{
+		?>
+		<td>
+			<a href="<?php echo($this->baseUrl);?>/tramitacao/edit/id/<?php echo($tramitacao['tr_id']);?>"><img src="<?php echo($this->baseUrl);?>/public/images/icons/edit.png" width="30" height="27" alt="Editar" title="Editar" border="0" /></a>
+			<?php
+				// Caso for o gestor (Tipo Usuário com ID = 1) libera desativação
+				if($this->userTipoId == 1):
+			?>
+			<a href="<?php echo $this->baseUrl;?>/tramitacao/delete/id/<?php echo $tramitacao['tr_id'];?>"><img src="<?php echo($this->baseUrl);?>/public/images/icons/delete.png" width="30" height="27" alt="Desativar" title="Desativar" border="0" /></a>
+			<?php
+				endif;
+			?>
+		</td>
+		<?php
+		}
+		?>
+	</tr>
+<?php
+	endforeach;
+?>
+	<?php
+	}
+	?>
+</table>
+</form>
+<?php
+else:
+?>
+	<p><strong><?php echo($this->userLogin);?></strong>, não há tramitações.</p>
+<?php
+endif;
+?>
+
+<?php
+// echo $this->paginationControl($this->paginator, 'Sliding', 'pagination/partial.phtml');
+//echo($this->paginator);
+echo($this->render('pagination/partial.phtml'));
+?>
+<?php echo($this->render('footer.tpl.phtml'));?>

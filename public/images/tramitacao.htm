@@ -1,0 +1,9 @@
+<br />
+<b>Fatal error</b>:  Uncaught exception 'Zend_Db_Statement_Exception' with message 'SQLSTATE[HY000]: General error: 10007 Line 1: Incorrect syntax near ')'. [10007] (severity 5) [(null)]' in C:\Apache2.2\htdocs\tramitacao_documentos\library\Zend\Db\Statement\Pdo.php:234
+Stack trace:
+#0 C:\Apache2.2\htdocs\tramitacao_documentos\library\Zend\Db\Statement.php(300): Zend_Db_Statement_Pdo-&gt;_execute(Array)
+#1 C:\Apache2.2\htdocs\tramitacao_documentos\library\Zend\Db\Adapter\Abstract.php(468): Zend_Db_Statement-&gt;execute(Array)
+#2 C:\Apache2.2\htdocs\tramitacao_documentos\library\Zend\Db\Adapter\Pdo\Abstract.php(238): Zend_Db_Adapter_Abstract-&gt;query('SELECT DISTINCT...', Array)
+#3 C:\Apache2.2\htdocs\tramitacao_documentos\application\models\Documento.php(176): Zend_Db_Adapter_Pdo_Abstract-&gt;query('SELECT DISTINCT...')
+#4 C:\Apache2.2\htdocs\tramitacao_documentos\application\controllers\TramitacaoController.php(201): Documento-&gt;getDocumentosUnidade(NULL)
+#5 C:\Apache2.2\htdocs\tramitacao_documentos\library\Zend\Controller\Action.php(513):  in <b>C:\Apache2.2\htdocs\tramitacao_documentos\library\Zend\Db\Statement\Pdo.php</b> on line <b>234</b><br />

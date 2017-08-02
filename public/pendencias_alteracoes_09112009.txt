@@ -1,0 +1,124 @@
+======= Regras de Negócio e Ajustes ==========
+
+Identificação (nº ou cód.) do documento - nome do usuário - Listagem Cadastrados (OK em 12/11/2009)
+
+Espaço maior -> Descrições + complemento do assunto do documento (OK em 10/11/2009)
+
+Orgão Externo - Origem Documento (Orgão de Origem) - (OK em 10/11/2009)
+
+Listagem documento - Identificação (nº ou cód.) do documento e data do documento (Elaboração) - (OK em 10/11/2009)
+
+Listagem de documentos pendentes da unidade (botão de finalização junto com os documentos recebidos) 2h - (OK em 12/11/2009)
+
+único que pode alterar documento e tramitação são os usuários da unidade que o cadastrou 2h - (OK em 12/11/2009)
+
+Cadastro Configuração da liberação do agendamento da tramitação do documento - 2h (OK em 12/11/2009)
+
+botão de finalização junto com os documentos para tramitar - 1h (OK em 12/11/2009)
+
+13/11/2009
+- Campo login somente leitura quando for alteração de senha
+- Liberados cadastros auxiliares e impressão somente para o Gestor
+
+Cadastro Tramitação - (OK em 17/11/2009)
+Após cadastro da(s) tramitação(ões) exibir tela de confirmação antes da impressão da guia (Imprimir guia listando a relação dos documentos, Imprimir guia na tela p/ impressão) - 4h - 18/11/2009 - Início:11h15 - 17h10
+1 única guia com vários documentos: unidade de origem e destino, data, assunto ou cota, login, nº documento (identificação do documento obter o formato por enquanto 
+indeterminado (varchar 20)) - 4h
+pode alterar editar dados da tramitação desde que não tenha sido impressa a guia - 4h - (OK em 23/11/2009 - 11h)
+Total: 12h
+
+Evitar duplicidade cadastros (uniques) - 15min.- (OK em 12/11/2009)
+
+Relatórios e Parâmetros de consulta: todos os usuários podem somente visualizar os documentos que não pertencem a ele (Definir campos com a PG para filtrar os dados -  Aguardando a PG) - (Início: 26/11/2009 - 16h)
+
+Histórico cadastro e alteração (finalização tramitação) do documento, tramitação, assunto, tipodocumento e orgão - 5h
+
+Intregrações necessárias com a tabela de Usuários e Unidades (Aguardando PG)
+
+17/11/2009
+	- Ordenar consultas pela descrição, acertar a codificação e as células faltando nas listagens. (OK em 17/11/2009)
+	- Codificação dos campos dos formulários e não mudar todos os caracteres dos campos para minúsculos. (OK em 17/11/2009)
+	- Redirecionar usuário para formulário de novo registro após incluir novo registro. (OK em 17/11/2009)
+	- Número do documento (Formato)
+	- Duplicidade cadastros, tratar erro e exibir lista de cadastros antes do form. de cadastro.
+	- Relatórios em PDF (Lucas - Tipo Documento - 17/11/2009).
+	- Botão Cancelar o cadastro retornar para página anterior. (OK em 17/11/2009)
+	- Alterar o campo orgão de origem (orgão externo) da tabela de documento para a tabela de tipo de documento. (Mudou)
+	
+18/11/2009
+	- Posicionar botões de ação lado-a-lado - (OK em 18/11/2009)
+	- Alterar campo complemento do assunto do documento para 500 caracteres no máximo e alterar no formulário para textarea (OK em 18/11/2009)
+	- Nas listagens colocar a coluna da data por último
+	- Ícones para editar e desativar (OK em 26/11/2009)
+	- Nas listagens padronizar o usuário, exibir o nome do usuário ao invés do login para todos os usuários inclusive os registros efetuados pelo usuário logado (OK em 26/11/2009)
+	
+19/11/2009
+	- Ajustes consistência liberação de desativação, edição e finalização de tramitação e dos documentos (OK em 19/11/2009) 8h as 11h
+	- Disposição da listagem de Documentos no cadastro de tramitação (OK em 30/11/2009)
+	- No cadastro de documento Antes de solicitar a informação de Origem do Documento deverá ser solicitado a seginte informação:
+		Documento externo? Sim      Não
+	    Se Sim o órgão de origem deverá acessar a tabela de órgão externo.
+		Caso contrário deverá ser utilizado a tabela de unidade administrativa do usuário logado. (OK em 03/12/2009)
+	- Agregar PDF no cadastro de Documentos. Upload de Arquivo PDF. (OK em 26/11/2009)
+	
+27/11/2009
+	- Ao finalizar tramitação abrir PDF numa nova página e ou voltar para a página inicial do sistema (OK em 01/12/2009)
+	
+01/12/2009
+	- Listagens de documento e tramitação em ordem decrescente de cadastro e ordem crescente do número do documento, inclusive o histórico das tramitações - (OK em 01/12/2009)
+	- Paginar listagens com 100 registros por página e na listagem dos documentos a tramitar ordenar pelo número do documento e pela data decrescente, além de exibir o filtro com o número, unidade e data - 1 hora (OK em 18/12/2009)
+	- Prever cadastro de usuário e unidade (Definir)
+	- Formatos do documento (A definir os formatos PDF, ODT, XLS e DOC) - (OK em 01/12/2009)
+	- Criar campo contador para guia (tr_numero_guia, mandar a impressão), sendo reiniciado a cada ano no formato (contador/ano) - 3 horas
+	- Retirar campo cota da guia da tramitação - (OK em 03/12/2009)
+	- Formatar guia conforme modelo que será enviado pelo Márcio via email - 3 horas (Ok em 16/12/2009)
+	- Mudar nome do status da tramitação, receber (Finalizar) e pendente de recebimento (Pendente) - (OK em 01/12/2009)
+	- Filtrar os documentos a tramitar no cadastro de tramites e somente exibir os que estão na unidade (área), e na unidade de destino não exibir a unidade do usuário logado - 1 hora - (OK em 18/12/2009 e finalizado 21/12/2009)
+	- Subir logo para abertura do site da prefeitura (OK em 01/12/2009)
+	- Poder finalizar (receber) documentos tramitados em lote, (exibir checkbox e o botão receber) nos documentos pendentes na unidade - 3 horas - (OK em 17/12/2009)
+	- Poder finalizar (receber) documentos tramitados em lote através do número da guia, (exibir checkbox e o botão receber) nos documentos pendentes na unidade - 3 horas - 
+	- na página inicial exibir se há e quantos documentos tramitados na unidade - (OK em 07/12/2009)
+	- somente liberar edição se o documento não foi tramitado (edição e desativação (finalização)) - 2 horas (OK em 16/12/2009)
+	- link para impressão da folha de rosto do documento na listagem de documentos - 3 horas (OK em 17/12/2009)
+
+02/12/2009
+	Adicionada coluna orgão de origem nas listagens de documentos e tramitações (OK em 02/12/2009)
+
+15/12/2009
+	Edição do documento não grava as alterações. (OK em 16/12/2009)
+	Quebra de linha no complemento do documento gera um erro (OK em 18/12/2009)
+	
+15/12/2009
+	Alteração gravação de cadastro e edição arquivos para tabela e exibição do arquivo salvo (tb_documento_arquivo) (OK em 16/12/2009)
+	
+16/12/2009
+	Alterar a tabela de consulta com as seguintes informações (não entendi, perguntar para Suely):
+	
+	Numero do documento
+	Ano
+	Tipo
+	Assunto
+	Complemento
+	Data de elaboração tirar a hora (OK em 18/12/2009)
+	Publicado por
+para:
+	Filtro de consulta
+	Tipo de documento
+	Ano
+	Número do documento
+	Assunto
+	Complemento do Assunto
+	Período de Publicação
+	Autoria de Publicação
+	
+	Substituir o descritivo Órgão Origem Externa para Publicado por (diferentes versões para proguaru e prefeitura):
+	
+	Quando ocorre o não atendimento das regras obrigatórias perde-se o vínculo da opção de arquivo anexado
+	
+	Finalizar consulta e filtros do documento
+	
+18/12/2009
+	Na listagem de documentos (servdados, documentos intranet) ordenar pelo ano e Nº Documento: decrescente. (Suely)
+
+21/12/2009
+	Ao colocar uma data inválida (ex. 32/12/2009) dá erro no sistema.

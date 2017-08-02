@@ -1,84 +1,72 @@
 <?php
 /**
- * Classe modelo de formulário de TramitacaoForm
+ * Classe modelo de formulÃ¡rio de TramitacaoForm
  */
-class TramitacaoForm extends Zend_Form
+class AssuntoForm extends Zend_Form
 {
     public function init()
     {
-		// ID do tipo do documento
-        $td_id = $this->addElement('select', 'dc_id', array(
-            'filters'    => array('StringTrim', 'StringToLower'),
+		Zend_Loader::loadClass('Zend_Form_Element_Hidden');
+		
+		// Cota da tramitaÃ§Ã£o se houver (DEFAULT NULL)
+        $tr_cota = $this->addElement('text', 'as_descricao', array(
+            'filters'    => array('StringTrim'),
             'validators' => array(
-                'num'
+                'StringLength',
+                array('StringLength', false, array(3, 200)),
             ),
             'required'   => true,
-            'label'      => 'Documento:'
-        ));
+            'label'      => '* DescriÃ§Ã£o:',
+			'size'		 => 70
+        ));	
 		
-		// Cota da tramitação se houver (DEFAULT NULL)
-        $tr_cota = $this->addElement('text', 'tr_cota', array(
-            'filters'    => array('StringTrim', 'StringToLower'),
-            'validators' => array(
-                'Alpha',
-                array('StringLength', false, array(1, 200)),
-            ),
-            'required'   => false,
-            'label'      => 'Cota:'
-        ));
-		
-		// Data Início Tramitação
-        $tr_cota = $this->addElement('text', 'tr_data_inicio', array(
-            'filters'    => array('StringTrim', 'StringToLower'),
-            'validators' => array(
-                'Alpha',
-                array('StringLength', false, array(10, 10))
-            ),
-            'required'   => false,
-            'label'      => 'Cota:'
-        ));
-		
-		// Data Término Tramitação
-		$oe_id = $this->addElement('text', 'tr_data_termino', array(
-            'filters'    => array('StringTrim', 'StringToLower'),
-            'validators' => array(
-                'Alpha',
-				array('StringLength', false, array(10, 10))
-            ),
-            'required'   => true,
-            'label'      => 'Ordem Externa:'
-        ));
-	
-		// ID Unidade de destino (DEFAULT NULL)
-		$oe_id = $this->addElement('select', 'un_id', array(
-            'filters'    => array('StringTrim', 'StringToLower'),
-            'validators' => array(
-                'num'
-            ),
-            'required'   => true,
-            'label'      => 'Ordem Externa:'
-        ));
-		
-		$oe_id = $this->addElement('select', 'un_id', array(
-            'filters'    => array('StringTrim', 'StringToLower'),
-            'validators' => array(
-                'num'
-            ),
-            'required'   => true,
-            'label'      => 'Ordem Externa:'
-        ));
-		
-		
-		
-		// Botão de envio do formulário
-        $salvar = $this->addElement('submit', 'save', array(
+		// BotÃ£o de envio do formulÃ¡o
+        $submit = $this->createElement('submit', 'save', array(
             'required' => true,
             'ignore'   => true,
             'label'    => 'Salvar'
         ));
-        
+        $submit->removeDecorator('Label');
+		$submit->removeDecorator("DtDdWrapper"); //I'm removing DtDdWrapper and it will not be wrapped with them anymore but let's also see how I can reset them...
+        $submit->setDecorators(
+		array(
+			array("decorator" => "ViewHelper"), //This one is required...
+            array("decorator" =>"HtmlTag", "options" => 
+			array('tag' => "span", "class" =>"formbutton")))
+		); //Beware that I can set the attributes of the span element via options...
+		$this->addElement($submit);
+		
+		// BotÃ£o de cancelamento da aÃ§Ã£o
+		$cancel = $this->createElement('button', 'cancel', array(
+			'required' => false,
+			'ignore'   => true,
+			'label'    => 'Cancelar',
+			'attribs' => array(
+				#'onclick' => "window.location.href='".$view->baseUrl.'/'.$view->controllerName."'"
+				'onclick' => "window.location.href='/tramitacao_documentos'"
+			)
+		));
+		$cancel->removeDecorator('Label');
+		$cancel->removeDecorator("DtDdWrapper"); //I'm removing DtDdWrapper and it will not be wrapped with them anymore but let's also see how I can reset them...
+		$cancel->setDecorators(array(
+		array("decorator" => "ViewHelper"), //This one is required...
+			array("decorator" =>"HtmlTag", "options" => 
+			array('tag' => "span", "class" =>"formbutton")))
+		); //Beware that I can set the attributes of the span element via options...
+		$this->addElement($cancel);
+		
+		/*$asId = new Zend_Form_Element_Hidden('as_id');
+		if(isset($view->dados))
+			$asId->setValue($view->dados->as_id);
+		//$this->addElements(array($dc_id, $artista, $titulo, $submit));
+		$this->addElement($asId)*/
+          /*->addElement($artista)
+          ->addElement($titulo)
+          ->addElement($sub)
+          ->addElement($bt_voltar)*/;
+		
         /**
-         * Esse método serve para exibir mensagens de erro no submit do formulário
+         * Esse mÃ©todo serve para exibir mensagens de erro no submit do formulÃ¡rio
          */
         $this->setDecorators(array(
             'FormElements',

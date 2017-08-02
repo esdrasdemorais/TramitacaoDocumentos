@@ -1,61 +1,68 @@
 <?php
 /**
- * Classe modelo de formul�rio de Documentos
+ * Classe modelo de formulário de Documentos
  */
-class DocumentoForm extends Zend_Form
+class TipoDocumentoForm extends Zend_Form
 {
     public function init()
     {
-		// ID do tipo do documento
-        $td_id = $this->addElement('select', 'td_id', array(
-            'filters'    => array('StringTrim', 'StringToLower'),
-            'validators' => array(
-                'num'
-            ),
-            'required'   => true,
-            'label'      => 'Tipo de Documento:'
-        ));
-
-		// ID do assunto do documento
-		$as_id = $this->addElement('select', 'as_id', array(
-            'filters'    => array('StringTrim', 'StringToLower'),
-            'validators' => array(
-                'num'
-            ),
-            'required'   => true,
-            'label'      => 'Assunto:'
-        ));
+		Zend_Loader::loadClass('Zend_Form_Element_Hidden');
 		
 		// Complemento do assunto do documento
-        $dc_compl_assunto = $this->addElement('text', 'dc_compl_assunto', array(
-            'filters'    => array('StringTrim', 'StringToLower'),
+        $dc_compl_assunto = $this->addElement('text', 'td_descricao', array(
+            'filters'    => array('StringTrim'),
             'validators' => array(
-                'Alpha',
-                array('StringLength', false, array(1, 150)),
-            ),
-            'required'   => false,
-            'label'      => 'Complemento do Assunto:'
-        ));
-		
-		// ID da Ordem Externa do documento se houver (DEFAULT NULL)
-		$oe_id = $this->addElement('select', 'oe_id', array(
-            'filters'    => array('StringTrim', 'StringToLower'),
-            'validators' => array(
-                'num'
+                'StringLength',
+                array('StringLength', false, array(3, 150)),
             ),
             'required'   => true,
-            'label'      => 'Ordem Externa:'
+            'label'      => "* Descrição:",
+			'size'		 => 70
         ));
 		
-		// Bot�o de envio do formul�rio
-        $salvar = $this->addElement('submit', 'save', array(
+		// Botão de envio do formulário
+        $submit = $this->createElement('submit', 'save', array(
             'required' => true,
             'ignore'   => true,
             'label'    => 'Salvar'
         ));
-        
+        $submit->removeDecorator('Label');
+		$submit->removeDecorator("DtDdWrapper"); //I'm removing DtDdWrapper and it will not be wrapped with them anymore but let's also see how I can reset them...
+        $submit->setDecorators(
+		array(
+			array("decorator" => "ViewHelper"), //This one is required...
+            array("decorator" =>"HtmlTag", "options" => 
+			array('tag' => "span", "class" =>"formbutton")))
+		); //Beware that I can set the attributes of the span element via options...
+		$this->addElement($submit);
+		
+		// Botão de cancelamento da ação
+		$cancel = $this->createElement('button', 'cancel', array(
+			'required' => false,
+			'ignore'   => true,
+			'label'    => 'Cancelar',
+			'attribs' => array(
+				#'onclick' => "window.location.href='".$view->baseUrl.'/'.$view->controllerName."'"
+				'onclick' => "window.location.href='/tramitacao_documentos'"
+			)
+		));
+		$cancel->removeDecorator('Label');
+		$cancel->removeDecorator("DtDdWrapper"); //I'm removing DtDdWrapper and it will not be wrapped with them anymore but let's also see how I can reset them...
+		$cancel->setDecorators(array(
+		array("decorator" => "ViewHelper"), //This one is required...
+			array("decorator" =>"HtmlTag", "options" => 
+			array('tag' => "span", "class" =>"formbutton")))
+		); //Beware that I can set the attributes of the span element via options...
+		$this->addElement($cancel);
+ 
+		/*$tdId = new Zend_Form_Element_Hidden('td_id');
+		if(isset($view->dados))
+			$tdId->setValue($view->dados->dc_id);
+		$this->addElements(array($dc_id, $artista, $titulo, $submit));
+		$this->addElement($tdId);*/
+		
         /**
-         * Esse m�todo serve para exibir mensagens de erro no submit do formul�rio
+         * Esse método serve para exibir mensagens de erro no submit do formulário
          */
         $this->setDecorators(array(
             'FormElements',

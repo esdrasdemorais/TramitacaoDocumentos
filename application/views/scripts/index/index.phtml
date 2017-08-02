@@ -1,17 +1,25 @@
 <?php echo($this->render('header.tpl.phtml'));?>
 <div class="center_block">
 	<h2>SISTEMA DE TRAMITA&Ccedil;&Atilde;O DE DOCUMENTOS</h2>
-	<h2>UNIDADES DA PREFEITURA DE GUARULHOS</h2>
+	<h2>RESOLUÇÕES E DOCUMENTOS DA PROGUARU E PREFEITURA</h2>
 	<h2>Vers&atilde;o 1.0</h2>
 	<p>
 	Utilize o menu acima para navegar no sistema
 	</p>
-	<p id="footer_dev">
-	Desenvolvido pela equipe de desenvolvimento da Proguaru
-	<br />
-	Progresso de desenvolvimento de Guarulhos S.A.
-	<br />
-	10/2009
-	</p>
+	<h3>
+		<?php
+		if($this->countTramitacoesPendentes > 0):
+		?>
+		<a href="<?php echo($this->baseUrl.'/tramitacao/listpendencies');?>">
+			<?php echo($this->userLogin); ?>, existem <?php echo($this->countTramitacoesPendentes); ?> documentos pendentes na unidade.
+		</a>
+		<?php
+		else:
+		?>
+		<p style="font-weight:normal"><strong><?php echo($this->userLogin);?></strong>, não há documentos pendentes na unidade <strong><?php echo(utf8_encode($this->userUnit));?></strong>.</p>
+		<?php
+		endif;
+		?>
+	</h3>
 </div>
 <?php echo($this->render('footer.tpl.phtml'));?>

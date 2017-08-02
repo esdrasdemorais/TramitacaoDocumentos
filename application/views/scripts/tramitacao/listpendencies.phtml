@@ -1,0 +1,149 @@
+<?php echo($this->render('header.tpl.phtml')); ?>
+<h1><?php echo($this->title); ?></h1>
+<?php echo $this->tramitacoesPendentesSearchForm; ?>
+<br />
+<?php
+if(count($this->tramitacoes)):
+?>
+<style type="text/css">
+.tdButton, .trButton
+{
+	cursor:pointer;
+	_cursor:hand;
+}
+</style>
+<script type="text/javascript">
+function finalizarTramitacao(id)
+{
+	document.getElementById(id).checked = true;
+	document.getElementById('id').value = id;
+	document.getElementById('formFinalizarTramitacao').submit();
+}
+
+function desativarTramitacao(id)
+{
+	document.getElementById('id').value = id;
+	alert(document.getElementById('id'));
+	//document.getElementById('formFinalizarTramitacao').submit();
+}
+
+function expandDocumentosTramitacao(id)
+{
+	try
+	{	
+		var trDocumentoTramitacao    = document.getElementById('documentosTramitacao'+id);
+		var tdButtonExpandDocumentos = document.getElementById('buttonExpandDocumentos'+id);
+		if(trDocumentoTramitacao.style.display == 'none')
+		{
+			trDocumentoTramitacao.style.display = '';
+			tdButtonExpandDocumentos.innerHTML = '-';
+		}
+		else
+		{
+			trDocumentoTramitacao.style.display = 'none';
+			tdButtonExpandDocumentos.innerHTML = '+';
+		}
+	}
+	catch(e)
+	{
+		alert(e);
+	}
+}
+</script>
+<form name="formFinalizarTramitacao" id="formFinalizarTramitacao" action="<?php echo($this->baseUrl);?>/<?php echo($this->controllerName);?>/finally" method="post">
+<table border="1">
+	<tr>
+		<th></th>
+		<th>Guia</th>
+		<th>Data Início</th>
+		<th>Documento</th>
+		<th>Origem</th>
+		<th>Usuário</th>
+		<th>Cota</th>
+	</tr>
+<?php
+	$tramitacao = array();
+	foreach($this->tramitacoes as $key => $tramitacao): 
+?>
+	<tr onclick="expandDocumentosTramitacao(<?php echo($tramitacao['tr_numero_guia']);?>)" id="guiaTramitacao<?php echo($tramitacao['tr_numero_guia']);?>" class="trButton">
+		<td id="buttonExpandDocumentos<?php echo($tramitacao['tr_numero_guia']);?>" class="tdButton">+</td>
+		<td><?php echo($this->escape($tramitacao['tr_numero_guia'])); ?></td>
+		<td><?php echo($this->escape($tramitacao['tr_data_inicio'])); ?></td>
+		<td><?php echo($this->escape($tramitacao['un_descricao'])); ?></td>
+		<td><?php echo($this->escape($tramitacao['un_descricao'])); ?></td>
+		<td><?php echo($this->escape(utf8_encode($tramitacao['us_nome']))); ?></td>
+		<td><?php echo(strlen($tramitacao['tr_cota']) ? $this->escape($tramitacao['tr_cota']) : '&nbsp;');?></td>
+		<td>
+			<label>
+				<a href="javascript:void(0)" onclick="finalizarTramitacao(<?php echo($tramitacao['tr_numero_guia']);?>)">
+					<strong class="receber" >Receber</strong>
+				</a>
+			</label>
+			<?php
+			// Caso for o gestor da unidade que cadastrou a tramitação libera desativação
+			if($tramitacao['libera_desativacao'])
+			{
+			?>
+			<a href="javascript:void(0)" onclick="desativarTramitacao(<?php echo $tramitacao['tr_numero_guia'];?>)"><img src="<?php echo($this->baseUrl);?>/public/images/icons/delete.png" width="30" height="27" alt="Desativar" title="Desativar" border="0" /></a>
+			<?php
+			}
+			?>
+		</td>
+		<td>
+			<input type="checkbox" name="ids[]" id="<?php echo($tramitacao['tr_numero_guia']);?>" value="<?php echo(implode(";", $tramitacao['tr_id']));?>" />
+			<label for="<?php echo($tramitacao['tr_numero_guia']);?>" style="cursor:pointer;_cursor:hand;">Marcar</label>
+		</td>
+	</tr>
+	<tr id="documentosTramitacao<?php echo($tramitacao['tr_numero_guia']);?>" style="display:none">
+		<td colspan="9">
+			<table width="100%">
+				<tr>
+					<th>Documento</th>
+					<th>Data Cadasatro</th>
+					<th>Data Elaboração</th>
+					<th>Origem</th>
+					<th>Usuário</th>
+					<th>Assunto</th>
+				</tr>
+				<?php
+				foreach($tramitacao['documentos'] as $documento)
+				{
+				?>
+				<tr>
+					<td><?php echo($this->escape($documento['dc_numero'])); ?></td>
+					<td><?php echo($this->escape($documento['dc_data_cadastro'])); ?></td>
+					<td><?php echo($this->escape($documento['dc_data_elaboracao'])); ?></td>
+					<td><?php echo($this->escape($documento['orgao_origem'])); ?></td>
+					<td><?php echo($this->escape($documento['us_nome'])); ?></td>
+					<td><?php echo($this->escape($documento['dc_numero'])); ?></td>
+				</tr>
+				<?php
+				}
+				?>
+			</table>
+		</td>
+	</tr>
+<?php
+	endforeach;
+?>
+	<tr>
+		<td colspan="9" style="text-align:right;width:70px"><input type="submit" value="Receber V&aacute;rios" /></td>
+	</tr>
+<?php
+else:
+?>
+	<p><strong><?php echo($this->userLogin);?></strong>, não há documentos pendentes na unidade <strong><?php echo(utf8_encode($this->userUnit));?></strong>.</p>
+<?php
+endif;
+?>
+</table>
+<input type="hidden" name="id" id="id" />
+</form>
+
+<?php
+// echo $this->paginationControl($this->paginator, 'Sliding', 'pagination/partial.phtml');
+//echo($this->paginator);
+echo($this->render('pagination/partial.phtml'));
+?>
+
+<?php echo($this->render('footer.tpl.phtml')); ?>

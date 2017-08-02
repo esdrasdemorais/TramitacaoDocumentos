@@ -1,0 +1,31 @@
+<?php echo($this->render('header.tpl.phtml'));?>
+<?php echo $this->formSearch;?>
+<br />
+<p><a href="<?php echo $this->baseUrl; ?>/documento">Adicionar novo Documento</a></p>
+
+<table border="1">
+	<tr>
+		<th>Id</th>
+		<th>Tipo Documento</th>
+		<th>Data</th>
+		<th>Usu&aacute;rio</th>
+	</tr>
+<?php
+	foreach($this->documentos as $key => $documento):
+?>
+	<tr>
+		<td><?php echo($this->escape($documento->dc_id)); ?></td>
+		<td><?php echo($this->escape($documento->td_id));?></td>
+		<td><?php echo($this->escape($documento->dc_data_elaboracao));?></td>
+		<td><?php echo($this->escape($documento->us_id));?></td>
+		<td>
+			<a href="<?php echo($this->baseUrl);?>/documento/edit/id/<?php echo($documento->dc_id);?>">Editar</a>
+			<a href="<?php echo $this->baseUrl;?>/documento/delete/id/<?php echo $documento->dc_id;?>">Delete</a>
+		</td>
+	</tr>
+<?php
+	endforeach;
+?>
+</table>
+<?php #echo $this->paginationControl($this->paginator, 'Sliding', $this->baseUrl.'/pagination/search.phtml'); ?>
+<?php echo($this->render('footer.tpl.phtml'));?>
